@@ -12,6 +12,7 @@ import Weather from './pages/Weather';
 import Chatbot from './pages/Chatbot';
 import Analysis from './pages/Analysis';
 import './App.css';
+import RecommendationPage from './pages/RecommendationPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Navbar />
           <main className="main-content">
             <Routes>
+              <Route path="/recommendation" element={<RecommendationPage />} />
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
