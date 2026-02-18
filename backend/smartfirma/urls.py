@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('api/weather/', include('weather.urls')),
     path('api/news/', include('news.urls')),
     path('api/analysis/', include('analysis.urls')),
+    path('crops/', include('crops.urls'))
 ]
 
 if settings.DEBUG:
