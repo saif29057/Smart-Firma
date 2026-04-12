@@ -1,183 +1,157 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { messagingService } from '../services/messagingService';
-import { Link , useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import './Dashboard.css';
 
-// Données cultures tunisiennes pour le dashboard
+
+/* ─── Data ─────────────────────────────────────────────── */
+
 const TUNISIA_STATS = [
-  { culture: 'Blé Dur', production: '1.2M tonnes', rank: '#1 Mondial', icon: '🌾', color: '#f59e0b' },
-  { culture: 'Olives', production: '350K tonnes', rank: '#4 Mondial', icon: '🫒', color: '#16a34a' },
-  { culture: 'Dattes', production: '280K tonnes', rank: '#1 Export', icon: '🌴', color: '#dc2626' },
-  { culture: 'Agrumes', production: '450K tonnes', rank: 'Cap Bon', icon: '🍊', color: '#ea580c' }
+  { label: 'Blé dur',  value: '1,2M t',  rank: '#1 Mondial', icon: '🌾', accent: '#d97706' },
+  { label: 'Olives',   value: '350K t',  rank: '#4 Mondial', icon: '🫒', accent: '#16a34a' },
+  { label: 'Dattes',   value: '280K t',  rank: '#1 Export',  icon: '🌴', accent: '#dc2626' },
+  { label: 'Agrumes',  value: '450K t',  rank: 'Cap Bon',    icon: '🍊', accent: '#2563eb' },
 ];
 
-const QUICK_LOCATIONS = [
-  { name: 'Tunis', region: 'Nord', icon: '🏛️' },
-  { name: 'Sfax', region: 'Centre-Est', icon: '🏭' },
-  { name: 'Sousse', region: 'Est', icon: '🏖️' },
-  { name: 'Kairouan', region: 'Centre', icon: '🕌' },
-  { name: 'Gabès', region: 'Sud-Est', icon: '🌴' },
-  { name: 'Tozeur', region: 'Sud-Ouest', icon: '🏜️' },
-  { name: 'Nabeul', region: 'Cap Bon', icon: '🍊' },
-  { name: 'Gafsa', region: 'Sud-Ouest', icon: '⛏️' }
+const CROP_PILLS = ['🌾 Blé dur', '🫒 Olives', '🌴 Dattes', '🍊 Agrumes'];
+
+const ZONES = [
+  { label: 'Nord',   rain: '+400 mm/an',    crops: 'Blé tendre · Olives · Agrumes', cls: 'nord'   },
+  { label: 'Centre', rain: '250–400 mm/an', crops: 'Blé dur · Orge · Olives',       cls: 'centre' },
+  { label: 'Sud',    rain: '<250 mm/an',    crops: 'Dattes · Amandiers · Figuier',  cls: 'sud'    },
 ];
+
+/* ─── Component ─────────────────────────────────────────── */
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading]     = useState(true);
 
   useEffect(() => {
-    const fetchUnreadCount = async () => {
-      try {
-        const count = await messagingService.getUnreadCount();
-        setUnreadCount(count);
-      } catch (error) {
-        console.error('Error fetching unread count:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchUnreadCount();
+    messagingService.getUnreadCount()
+      .then(setUnreadCount)
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) {
-    return <div className="loading">Chargement...</div>;
-  }
+  if (isLoading) return <div className="dash-loading">Chargement…</div>;
 
   return (
-    <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>Tableau de bord Agriculteur</h1>
-        <p>Bienvenue, {user?.first_name} {user?.last_name}! 👨‍🌾</p>
-        <span className="location-badge">🇹🇳 Tunisie</span>
+    <div className="dash">
+
+      {/* ── Header ── */}
+      <div className="dash-header">
+        <div>
+          <h1 className="dash-title">Tableau de bord</h1>
+          <p className="dash-subtitle">
+            Bienvenue, <strong>{user?.first_name} {user?.last_name}</strong> — bonne journée !
+          </p>
+          <span className="badge-tn">🇹🇳 Tunisie</span>
+        </div>
+        <Link to="/messages" className="btn btn-outline header-msg-btn">
+          ✉&nbsp; {unreadCount} message{unreadCount !== 1 ? 's' : ''}
+        </Link>
       </div>
 
-      {/* Stats cultures tunisiennes */}
-      <div className="tunisia-stats-section">
-        <h2>🌾 Agriculture Tunisienne en chiffres</h2>
-        <div className="stats-grid">
-          {TUNISIA_STATS.map((stat, idx) => (
-            <div key={idx} className="stat-card" style={{ borderTop: `4px solid ${stat.color}` }}>
-              <span className="stat-icon">{stat.icon}</span>
-              <div className="stat-info">
-                <h4>{stat.culture}</h4>
-                <p className="stat-value">{stat.production}</p>
-                <span className="stat-rank">{stat.rank}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ── Stats ── */}
+      <h2 className="section-title">Agriculture tunisienne en chiffres</h2>
+      <div className="stats-row">
+        {TUNISIA_STATS.map((s) => (
+          <div key={s.label} className="stat-card" style={{ borderTopColor: s.accent }}>
+            <span className="stat-icon">{s.icon}</span>
+            <span className="stat-label">{s.label}</span>
+            <span className="stat-value">{s.value}</span>
+            <span className="stat-rank">{s.rank}</span>
+          </div>
+        ))}
       </div>
 
-      <div className="dashboard-grid">
-        <div className="dashboard-card featured">
-          <div className="card-badge">Nouveau</div>
-          <h3>🌾 Recommandation Culture</h3>
-          <div className="card-content">
-            <p>IA spécialisée pour les cultures tunisiennes (Blé dur, Olives, Dattes...)</p>
-            <div className="crop-preview">
-              <span>🌾</span>
-              <span>🫒</span>
-              <span>🌴</span>
-              <span>🍊</span>
-            </div>
-            <Link to="/recommendation">
-              <button className="btn btn-primary">Obtenir une recommandation</button>
-            </Link>
+      {/* ── Feature cards ── */}
+      <h2 className="section-title">Fonctionnalités</h2>
+      <div className="main-grid">
+
+        <div className="card card-featured">
+          <div className="card-header">
+            <h3 className="card-title">Recommandation de culture</h3>
+            <span className="badge-new">Nouveau</span>
           </div>
+          <p className="card-body">
+            IA spécialisée pour les cultures tunisiennes — blé dur, olives, dattes et plus.
+          </p>
+          <div className="crop-pills">
+            {CROP_PILLS.map((c) => (
+              <span key={c} className="crop-pill">{c}</span>
+            ))}
+          </div>
+          <Link to="/recommendation" className="btn btn-primary">
+            Obtenir une recommandation
+          </Link>
         </div>
 
-        <div className="dashboard-card">
-          <h3>📧 Messagerie</h3>
-          <div className="card-content">
-            <p>Vous avez {unreadCount} message{unreadCount > 1 ? 's' : ''} non lu{unreadCount > 1 ? 's' : ''}</p>
-            <Link to="/messages">
-              <button className="btn btn-primary">Voir la messagerie</button>
-            </Link>
-          </div>
+        <div className="card">
+          <h3 className="card-title">Messagerie</h3>
+          <div className="msg-count">{unreadCount}</div>
+          <p className="msg-sub">message{unreadCount !== 1 ? 's' : ''} non lu{unreadCount !== 1 ? 's' : ''}</p>
+          <Link to="/messages" className="btn btn-outline">Voir la messagerie</Link>
         </div>
 
-        <div className="dashboard-card">
-          <h3>🌤️ Météo Tunisie</h3>
-          <div className="card-content">
-            <p>Prévisions pour votre région agricole</p>
-            <div className="weather-mini">
-              <span>☀️</span>
-              <span>🌧️</span>
-              <span>💨</span>
-            </div>
-            <Link to="/weather">
-              <button className="btn btn-secondary">Consulter la météo</button>
-            </Link>
-          </div>
+        <div className="card">
+          <h3 className="card-title">Météo Tunisie</h3>
+          <p className="card-body">Prévisions pour votre région agricole.</p>
+          <Link to="/weather" className="btn btn-outline">Consulter</Link>
         </div>
 
-        <div className="dashboard-card">
-          <h3>💬 Assistant Agricole</h3>
-          <div className="card-content">
-            <p>Conseils pour vos cultures tunisiennes</p>
-            <Link to="/chatbot">
-              <button className="btn btn-secondary">Discuter avec l'IA</button>
-            </Link>
-          </div>
+        <div className="card">
+          <h3 className="card-title">Assistant agricole</h3>
+          <p className="card-body">Conseils personnalisés pour vos cultures locales.</p>
+          <Link to="/chatbot" className="btn btn-outline">Discuter avec l'IA</Link>
         </div>
 
-        <div className="dashboard-card">
-          <h3>🔍 Diagnostic Maladies</h3>
-          <div className="card-content">
-            <p>Identification des maladies des cultures locales</p>
-            <Link to="/analysis">
-              <button className="btn btn-secondary">Analyser une photo</button>
-            </Link>
-          </div>
+        <div className="card">
+          <h3 className="card-title">Diagnostic maladies</h3>
+          <p className="card-body">Identification des maladies par photo.</p>
+          <Link to="/analysis" className="btn btn-outline">Analyser une photo</Link>
         </div>
+
       </div>
 
-      <div className="dashboard-section zones-section">
-        <h2>🗺️ Zones Agro-écologiques de Tunisie</h2>
-        <div className="zones-grid">
-          <div className="zone-card nord">
-            <h4>🌲 Nord</h4>
-            <p>+400mm/an</p>
-            <span>Blé tendre, Olives, Agrumes</span>
+      {/* ── Zones ── */}
+      <h2 className="section-title">Zones agro-écologiques</h2>
+      <div className="zones-grid">
+        {ZONES.map((z) => (
+          <div key={z.label} className={`zone-card zone-${z.cls}`}>
+            <h4 className="zone-title">{z.label}</h4>
+            <div className="zone-rain">{z.rain}</div>
+            <p className="zone-crops">{z.crops}</p>
           </div>
-          <div className="zone-card centre">
-            <h4>🌾 Centre</h4>
-            <p>250-400mm/an</p>
-            <span>Blé dur, Orge, Olives</span>
-          </div>
-          <div className="zone-card sud">
-            <h4>🌴 Sud</h4>
-            <p>&lt;250mm/an</p>
-            <span>Dattes, Amandiers, Figuier de Barbarie</span>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="dashboard-section">
-        <h2>Informations du compte</h2>
-        <div className="profile-info">
-          <div className="info-row">
-            <strong>Nom d'utilisateur:</strong> {user?.username}
+      {/* ── Profile ── */}
+      <h2 className="section-title">Mon compte</h2>
+      <div className="profile-card">
+        {([
+          ["Nom d'utilisateur", user?.username],
+          ['Email',             user?.email],
+          ['Téléphone',         user?.phone || 'Non renseigné'],
+          ['Rôle',              user?.role],
+          ['Membre depuis',     user?.created_at
+            ? new Date(user.created_at).toLocaleDateString('fr-FR')
+            : 'N/A'],
+        ] as [string, string | undefined][]).map(([label, val]) => (
+          <div key={label} className="profile-row">
+            <span className="profile-label">{label}</span>
+            <span className="profile-value">{val}</span>
           </div>
-          <div className="info-row">
-            <strong>Email:</strong> {user?.email}
-          </div>
-          <div className="info-row">
-            <strong>Téléphone:</strong> {user?.phone || 'Non renseigné'}
-          </div>
-          <div className="info-row">
-            <strong>Rôle:</strong> {user?.role}
-          </div>
-          <div className="info-row">
-            <strong>Date d'inscription:</strong> {user?.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : 'N/A'}
-          </div>
-        </div>
+        ))}
       </div>
+
     </div>
   );
 };
 
 export default Dashboard;
+
+
