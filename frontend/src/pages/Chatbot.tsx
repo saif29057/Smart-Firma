@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { newsService, Article } from '../services/newsService';
 import { messagingService, SendMessageData } from '../services/messagingService';
+import { chatbotService, ChatMessage as ChatHistoryMessage } from '../services/chatbotService';
 import { useAuth } from '../contexts/AuthContext';
+import '../styles/ModernChatbot.css';
 
 interface Message {
   id: number;
@@ -29,11 +31,11 @@ const Chatbot: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    // Message de bienvenue
+    // Message de bienvenue spécialisé agriculture
     setMessages([
       {
         id: 1,
-        text: 'Bonjour ! Je suis votre assistant Smart Firma. Comment puis-je vous aider ?',
+        text: '🌱 Bonjour ! Je suis votre assistant agricole Smart Firma, spécialisé pour l\'agriculture tunisienne. Je peux vous aider avec les cultures, l\'irrigation, les prévisions météo, et bien plus encore. Comment puis-je vous aider aujourd\'hui ?',
         sender: 'bot',
         timestamp: new Date(),
       }
@@ -41,45 +43,34 @@ const Chatbot: React.FC = () => {
   }, []);
 
   const generateBotResponse = async (userMessage: string): Promise<string> => {
-    const message = userMessage.toLowerCase();
-    
-    // Réponses prédéfinies
-    if (message.includes('bonjour') || message.includes('salut') || message.includes('hello')) {
-      return 'Bonjour ! Comment puis-je vous aider aujourd\'hui ?';
+    try {
+      // Utiliser l'API OpenAI pour une réponse intelligente
+      const response = await chatbotService.sendMessage(userMessage);
+      return response.response;
+    } catch (error) {
+      console.error('Error calling AI service:', error);
+      
+      // Fallback vers les réponses prédéfinies en cas d'erreur
+      const message = userMessage.toLowerCase();
+      
+      if (message.includes('bonjour') || message.includes('salut') || message.includes('hello')) {
+        return 'Bonjour ! Je suis votre assistant agricole Smart Firma. Comment puis-je vous aider aujourd\'hui ?';
+      }
+      
+      if (message.includes('actualité') || message.includes('news') || message.includes('nouvelles')) {
+        return 'Je peux vous montrer les dernières actualités. Voulez-vous voir les actualités générales ou une catégorie spécifique ?';
+      }
+      
+      if (message.includes('météo') || message.includes('temps')) {
+        return 'Pour la météo, veuillez utiliser la page Météo dans le menu. Vous y trouverez les prévisions détaillées pour votre région.';
+      }
+      
+      if (message.includes('aide') || message.includes('help')) {
+        return 'Je suis votre assistant agricole spécialisé pour la Tunisie. Je peux vous aider avec :\n- Conseils sur les cultures (oliviers, céréales, agrumes)\n- Gestion de l\'irrigation\n- Prévisions météo et impact agricole\n- Maladies des plantes et traitements\n- Calendriers de plantation et récolte\n\nDemandez-moi ce que vous souhaitez savoir !';
+      }
+      
+      return 'Désolé, je rencontre des difficultés techniques. Je suis votre assistant agricole spécialisé pour la Tunisie. Posez-moi vos questions sur l\'agriculture, les cultures, l\'irrigation ou les prévisions météo !';
     }
-    
-    if (message.includes('actualité') || message.includes('news') || message.includes('nouvelles')) {
-      return 'Je peux vous montrer les dernières actualités. Voulez-vous voir les actualités générales ou une catégorie spécifique (sport, technologie, santé, etc.) ?';
-    }
-    
-    if (message.includes('météo') || message.includes('temps')) {
-      return 'Pour la météo, veuillez utiliser la page Météo dans le menu. Vous y trouverez les prévisions détaillées.';
-    }
-    
-    if (message.includes('aide') || message.includes('help')) {
-      return 'Je peux vous aider avec :\n- Consulter les actualités\n- Envoyer un message à l\'administrateur\n- Répondre à vos questions sur Smart Firma\n\nDites-moi ce que vous souhaitez faire !';
-    }
-    
-    if (message.includes('message') || message.includes('contact') || message.includes('admin')) {
-      return 'Je peux vous aider à envoyer un message à l\'administrateur. Quel est le sujet de votre message ?';
-    }
-    
-    if (message.includes('sport')) {
-      await fetchNews('sports');
-      return 'Voici les dernières actualités sportives :';
-    }
-    
-    if (message.includes('technologie') || message.includes('tech')) {
-      await fetchNews('technology');
-      return 'Voici les dernières actualités technologiques :';
-    }
-    
-    if (message.includes('santé') || message.includes('health')) {
-      await fetchNews('health');
-      return 'Voici les dernières actualités santé :';
-    }
-    
-    return 'Je ne suis pas sûr de comprendre. Pouvez-vous reformuler votre question ou demander de l\'aide ?';
   };
 
   const fetchNews = async (category: string = 'general') => {
@@ -170,58 +161,148 @@ const Chatbot: React.FC = () => {
 
   return (
     <div className="chatbot-page">
-      <div className="chatbot-container">
-        <div className="chatbot-header">
-          <h2>💬 Assistant Smart Firma</h2>
-          <div className="status-indicator">
-            <span className="status-dot"></span>
-            En ligne
+      {/* Hero Section */}
+      <div className="chatbot-hero">
+        <div className="hero-content">
+          <div className="hero-avatar">
+            <div className="avatar-icon">🌾</div>
+            <div className="avatar-status online"></div>
+          </div>
+          <h1>Assistant Agricole IA</h1>
+          <p className="hero-description">
+            Votre expert personnel pour l'agriculture tunisienne. 
+            Obtenez des conseils sur les cultures, l'irrigation, les maladies des plantes, et bien plus.
+          </p>
+          <div className="hero-features">
+            <div className="feature-item">
+              <span className="feature-icon">🌿</span>
+              <span className="feature-text">Cultures tunisiennes</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">💧</span>
+              <span className="feature-text">Gestion eau</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🌤️</span>
+              <span className="feature-text">Prévisions météo</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🦠</span>
+              <span className="feature-text">Maladies plantes</span>
+            </div>
+          </div>
+        </div>
+        <div className="hero-decoration">
+          <div className="floating-leaves">🍃</div>
+          <div className="floating-seeds">🌰</div>
+        </div>
+      </div>
+
+      <div className="chatbot-container modern-chat">
+        <div className="chatbot-header modern-header">
+          <div className="header-left">
+            <div className="bot-avatar">
+              <div className="avatar-circle">
+                <span className="avatar-emoji">🌾</span>
+                <div className="status-indicator online"></div>
+              </div>
+            </div>
+            <div className="header-info">
+              <h2>Dr. GreenThumb</h2>
+              <p>Expert en agriculture tunisienne</p>
+            </div>
+          </div>
+          <div className="header-right">
+            <div className="status-badge">
+              <span className="status-dot"></span>
+              <span className="status-text">En ligne</span>
+            </div>
+            <div className="response-time">
+              <span className="time-icon">⚡</span>
+              <span>Réponse IA instantanée</span>
+            </div>
           </div>
         </div>
 
-        <div className="chatbot-messages">
+        <div className="chatbot-messages modern-messages">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+              className={`message ${message.sender === 'user' ? 'user-message modern-user-message' : 'bot-message modern-bot-message'}`}
             >
-              <div className="message-content">
+              {message.sender === 'user' ? (
+                <div className="user-avatar">
+                  <div className="avatar-circle user-avatar-circle">
+                    <span className="avatar-emoji">👨‍🌾</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="bot-avatar">
+                  <div className="avatar-circle bot-avatar-circle">
+                    <span className="avatar-emoji">🌾</span>
+                    <div className="status-indicator online"></div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="message-content modern-message-content">
                 {message.type === 'news' ? (
-                  <div className="news-message">
+                  <div className="news-message modern-news">
                     {message.text.split('\n').map((line, index) => (
                       <div key={index}>
                         {line.startsWith('📰') ? (
-                          <strong>{line}</strong>
+                          <div className="news-header">
+                            <span className="news-icon">📰</span>
+                            <strong>{line.substring(2)}</strong>
+                          </div>
                         ) : line.startsWith('http') ? (
-                          <a href={line} target="_blank" rel="noopener noreferrer">
+                          <a href={line} target="_blank" rel="noopener noreferrer" className="news-link">
+                            <span className="link-icon">🔗</span>
                             Lire la suite
                           </a>
                         ) : (
-                          <p>{line}</p>
+                          <p className="news-text">{line}</p>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p>{message.text}</p>
+                  <div className="message-text modern-message-text">
+                    {message.text}
+                  </div>
                 )}
-                <span className="message-time">
-                  {message.timestamp.toLocaleTimeString('fr-FR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </span>
+                <div className="message-meta modern-message-meta">
+                  <span className="message-time">
+                    <span className="time-icon">🕐</span>
+                    {message.timestamp.toLocaleTimeString('fr-FR', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                  {message.sender === 'bot' && (
+                    <div className="ai-indicator">
+                      <span className="ai-icon">🤖</span>
+                      <span className="ai-text">IA</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
           
           {isLoading && (
-            <div className="message bot-message">
-              <div className="message-content">
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+            <div className="message bot-message modern-bot-message">
+              <div className="message-content modern-message-content">
+                <div className="typing-indicator modern-typing">
+                  <div className="typing-dots">
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                  </div>
+                  <div className="typing-text">
+                    <span className="typing-icon">💭</span>
+                    <span>L'IA réfléchit...</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -230,23 +311,31 @@ const Chatbot: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="chatbot-input">
-          <div className="input-container">
-            <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Tapez votre message..."
-              className="message-input"
-              rows={1}
-              disabled={isLoading}
-            />
+        <div className="chatbot-input modern-input">
+          <div className="input-container modern-input-container">
+            <div className="input-wrapper">
+              <textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Posez votre question sur l'agriculture tunisienne..."
+                className="message-input modern-message-input"
+                rows={1}
+                disabled={isLoading}
+              />
+              <div className="input-suggestions">
+                <span className="suggestion-tag">🌿 cultures</span>
+                <span className="suggestion-tag">💧 irrigation</span>
+                <span className="suggestion-tag">🦠 maladies</span>
+              </div>
+            </div>
             <button
               onClick={handleSendMessage}
               disabled={isLoading || !inputText.trim()}
-              className="send-button"
+              className="send-button modern-send-button"
             >
-              {isLoading ? '...' : 'Envoyer'}
+              <span className="send-icon">🚀</span>
+              {isLoading ? 'Envoi...' : 'Envoyer'}
             </button>
           </div>
         </div>

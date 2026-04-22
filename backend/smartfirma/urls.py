@@ -18,16 +18,34 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+def home_view(request):
+    return JsonResponse({
+        'message': 'Smart-Firma API',
+        'version': '1.0.0',
+        'endpoints': {
+            'admin': '/admin/',
+            'authentication': '/api/auth/',
+            'messaging': '/api/messaging/',
+            'weather': '/api/weather/',
+            'news': '/api/news/',
+            'analysis': '/api/analysis/',
+            'crops': '/crops/'
+        }
+    })
+
 urlpatterns = [
+    path('', home_view, name='home'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('api/messaging/', include('messaging.urls')),
     path('api/weather/', include('weather.urls')),
     path('api/news/', include('news.urls')),
     path('api/analysis/', include('analysis.urls')),
+    path('api/chatbot/', include('chatbot.urls')),
     path('crops/', include('crops.urls'))
 ]
 

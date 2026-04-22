@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'weather',
     'news',
     'analysis',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -174,6 +175,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # API Keys
 OPENWEATHER_API_KEY = config('OPENWEATHER_API_KEY')
 NEWS_API_KEY = config('NEWS_API_KEY')
+OPENAI_API_KEY = config('OPENAI_API_KEY')
 
 # Custom User Model
 AUTH_USER_MODEL = 'authentication.User'

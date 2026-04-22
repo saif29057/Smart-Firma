@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { analysisService, AnalysisLog, Prediction } from '../services/analysisService';
+import '../styles/ModernAnalysis.css';
 
 const Analysis: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -71,29 +72,67 @@ const Analysis: React.FC = () => {
 
   return (
     <div className="analysis-page">
-      <div className="analysis-header">
-        <h1>🔍 Analyse de maladie probable</h1>
-        <p>Téléchargez une image pour l'analyser avec notre IA</p>
+      {/* Hero Section */}
+      <div className="analysis-hero">
+        <div className="hero-content">
+          <div className="hero-icon">🌿</div>
+          <h1>Analyse Agricole Intelligente</h1>
+          <p className="hero-subtitle">Détectez les maladies des plantes avec notre IA spécialisée pour l'agriculture tunisienne</p>
+          <div className="hero-stats">
+            <div className="stat-item">
+              <span className="stat-number">95%</span>
+              <span className="stat-label">Précision</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">50+</span>
+              <span className="stat-label">Maladies</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">{'<'}2s</span>
+              <span className="stat-label">Analyse</span>
+            </div>
+          </div>
+        </div>
+        <div className="hero-decoration">
+          <div className="leaf-pattern">🍃</div>
+        </div>
       </div>
 
       <div className="analysis-content">
         <div className="upload-section">
-          <div className="upload-card">
-            <h2>Télécharger une image</h2>
+          <div className="upload-card modern-card">
+            <div className="card-header">
+              <div className="card-icon">📸</div>
+              <h2>Analyse de Plante</h2>
+              <p>Prenez une photo ou téléchargez une image de votre plante</p>
+            </div>
             
-            <div className="upload-area">
+            <div className="upload-area modern-upload">
               {previewUrl ? (
-                <div className="image-preview">
-                  <img src={previewUrl} alt="Preview" className="preview-image" />
-                  <button onClick={handleReset} className="btn btn-secondary reset-btn">
-                    Changer d'image
-                  </button>
+                <div className="image-preview-container">
+                  <div className="preview-wrapper">
+                    <img src={previewUrl} alt="Preview" className="preview-image" />
+                    <div className="preview-overlay">
+                      <button onClick={handleReset} className="btn btn-outline change-btn">
+                        <span className="btn-icon">🔄</span>
+                        Changer
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="upload-placeholder">
-                  <div className="upload-icon">📷</div>
-                  <p>Cliquez pour sélectionner une image</p>
-                  <p className="upload-hint">PNG, JPG, GIF jusqu'à 10MB</p>
+                <div className="upload-placeholder modern-placeholder">
+                  <div className="placeholder-content">
+                    <div className="placeholder-icon">🌿</div>
+                    <h3>Cliquez pour analyser</h3>
+                    <p>Glissez-déposez une image ou cliquez pour sélectionner</p>
+                    <div className="supported-formats">
+                      <span className="format-tag">PNG</span>
+                      <span className="format-tag">JPG</span>
+                      <span className="format-tag">GIF</span>
+                      <span className="size-info">Max 10MB</span>
+                    </div>
+                  </div>
                 </div>
               )}
               
@@ -106,16 +145,17 @@ const Analysis: React.FC = () => {
               />
             </div>
 
-            {error && <div className="alert alert-error">{error}</div>}
+            {error && <div className="alert alert-error modern-alert">{error}</div>}
 
             {selectedImage && (
               <div className="upload-actions">
                 <button
                   onClick={handleAnalyze}
                   disabled={isAnalyzing}
-                  className="btn btn-primary analyze-btn"
+                  className="btn btn-primary analyze-btn modern-analyze-btn"
                 >
-                  {isAnalyzing ? 'Analyse en cours...' : 'Analyser l\'image'}
+                  <span className="btn-icon">🔍</span>
+                  {isAnalyzing ? 'Analyse en cours...' : 'Lancer l\'analyse IA'}
                 </button>
               </div>
             )}
@@ -124,66 +164,108 @@ const Analysis: React.FC = () => {
 
         {result && (
           <div className="results-section">
-            <div className="results-card">
-              <h2>Résultats de l'analyse</h2>
+            <div className="results-card modern-results">
+              <div className="results-header">
+                <div className="results-icon">🌿</div>
+                <h2>Résultats de l'Analyse IA</h2>
+                <div className="confidence-badge" style={{ 
+                  backgroundColor: getConfidenceColor(result.confidence),
+                  color: '#fff'
+                }}>
+                  {(result.confidence * 100).toFixed(1)}% de confiance
+                </div>
+              </div>
               
               <div className="result-summary">
-                <div className="top-prediction">
-                  <h3>Prediction principale</h3>
-                  <div className="prediction-item main">
-                    <span className="class-name">{result.result.top_prediction.class}</span>
-                    <div className="confidence-bar">
-                      <div 
-                        className="confidence-fill"
-                        style={{ 
-                          width: `${result.result.top_prediction.confidence * 100}%`,
-                          backgroundColor: getConfidenceColor(result.result.top_prediction.confidence)
-                        }}
-                      ></div>
+                <div className="top-prediction main-prediction">
+                  <div className="prediction-header">
+                    <h3>Diagnostic Principal</h3>
+                    <div className="prediction-status">
+                      <span className="status-dot" style={{ 
+                        backgroundColor: getConfidenceColor(result.result.top_prediction.confidence)
+                      }}></span>
+                      {result.result.top_prediction.confidence >= 0.8 ? 'Haute confiance' : 
+                       result.result.top_prediction.confidence >= 0.6 ? 'Confiance moyenne' : 'Faible confiance'}
                     </div>
-                    <span className="confidence-value">
-                      {(result.result.top_prediction.confidence * 100).toFixed(1)}%
-                    </span>
+                  </div>
+                  <div className="prediction-item main">
+                    <div className="disease-info">
+                      <div className="disease-icon">🦠</div>
+                      <div className="disease-details">
+                        <span className="class-name">{result.result.top_prediction.class}</span>
+                        <div className="confidence-visual">
+                          <div className="confidence-progress">
+                            <div 
+                              className="confidence-fill"
+                              style={{ 
+                                width: `${result.result.top_prediction.confidence * 100}%`,
+                                backgroundColor: getConfidenceColor(result.result.top_prediction.confidence)
+                              }}
+                            ></div>
+                          </div>
+                          <span className="confidence-percentage">
+                            {(result.result.top_prediction.confidence * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="all-predictions">
-                  <h3>Toutes les predictions</h3>
-                  {result.result.predictions.map((prediction: Prediction, index: number) => (
-                    <div key={index} className="prediction-item">
-                      <span className="rank">#{prediction.rank}</span>
-                      <span className="class-name">{prediction.class}</span>
-                      <div className="confidence-bar">
-                        <div 
-                          className="confidence-fill"
-                          style={{ 
-                            width: `${prediction.confidence * 100}%`,
-                            backgroundColor: getConfidenceColor(prediction.confidence)
-                          }}
-                        ></div>
+                <div className="all-predictions predictions-list">
+                  <h3>Autres possibilités</h3>
+                  <div className="predictions-grid">
+                    {result.result.predictions.slice(1).map((prediction: Prediction, index: number) => (
+                      <div key={index} className="prediction-card">
+                        <div className="prediction-rank">#{prediction.rank + 1}</div>
+                        <div className="prediction-content">
+                          <span className="class-name">{prediction.class}</span>
+                          <div className="mini-confidence-bar">
+                            <div 
+                              className="confidence-fill"
+                              style={{ 
+                                width: `${prediction.confidence * 100}%`,
+                                backgroundColor: getConfidenceColor(prediction.confidence)
+                              }}
+                            ></div>
+                          </div>
+                          <span className="confidence-value">
+                            {(prediction.confidence * 100).toFixed(1)}%
+                          </span>
+                        </div>
                       </div>
-                      <span className="confidence-value">
-                        {(prediction.confidence * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="analysis-meta">
-                <div className="meta-item">
-                  <span className="label">Confiance globale:</span>
-                  <span className="value">{(result.confidence * 100).toFixed(1)}%</span>
-                </div>
-                <div className="meta-item">
-                  <span className="label">Temps de traitement:</span>
-                  <span className="value">{formatTime(result.processing_time)}</span>
-                </div>
-                <div className="meta-item">
-                  <span className="label">Date:</span>
-                  <span className="value">
-                    {new Date(result.created_at).toLocaleString('fr-FR')}
-                  </span>
+              <div className="analysis-meta modern-meta">
+                <div className="meta-grid">
+                  <div className="meta-item">
+                    <div className="meta-icon">⚡</div>
+                    <div className="meta-content">
+                      <span className="label">Temps de traitement</span>
+                      <span className="value">{formatTime(result.processing_time)}</span>
+                    </div>
+                  </div>
+                  <div className="meta-item">
+                    <div className="meta-icon">📅</div>
+                    <div className="meta-content">
+                      <span className="label">Date d'analyse</span>
+                      <span className="value">
+                        {new Date(result.created_at).toLocaleString('fr-FR')}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="meta-item">
+                    <div className="meta-icon">🎯</div>
+                    <div className="meta-content">
+                      <span className="label">Confiance globale</span>
+                      <span className="value confidence-high">
+                        {(result.confidence * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -192,24 +274,42 @@ const Analysis: React.FC = () => {
 
         {history.length > 0 && (
           <div className="history-section">
-            <h2>Historique des analyses</h2>
-            <div className="history-grid">
+            <div className="history-header">
+              <div className="history-icon">📊</div>
+              <h2>Historique des Analyses</h2>
+              <p>Vos analyses précédentes de maladies des plantes</p>
+            </div>
+            <div className="history-grid modern-history">
               {history.map((item) => (
-                <div key={item.id} className="history-item">
-                  <img 
-                    src={item.image_url} 
-                    alt="Analysis" 
-                    className="history-image"
-                  />
+                <div key={item.id} className="history-item modern-history-item">
+                  <div className="history-image-container">
+                    <img 
+                      src={item.image_url} 
+                      alt="Analysis" 
+                      className="history-image"
+                    />
+                    <div className="history-overlay">
+                      <div className="confidence-indicator" style={{ 
+                        backgroundColor: getConfidenceColor(item.result.top_prediction?.confidence || 0)
+                      }}>
+                        {(item.result.top_prediction?.confidence || 0 * 100).toFixed(0)}%
+                      </div>
+                    </div>
+                  </div>
                   <div className="history-info">
                     <div className="history-result">
-                      {item.result.top_prediction?.class}
+                      <span className="result-label">Diagnostic:</span>
+                      <span className="result-value">{item.result.top_prediction?.class}</span>
                     </div>
-                    <div className="history-confidence">
-                      {(item.result.top_prediction?.confidence || 0 * 100).toFixed(1)}%
-                    </div>
-                    <div className="history-date">
-                      {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                    <div className="history-meta">
+                      <div className="confidence-item">
+                        <span className="meta-mini-icon">🎯</span>
+                        {(item.result.top_prediction?.confidence || 0 * 100).toFixed(1)}%
+                      </div>
+                      <div className="date-item">
+                        <span className="meta-mini-icon">📅</span>
+                        {new Date(item.created_at).toLocaleDateString('fr-FR')}
+                      </div>
                     </div>
                   </div>
                 </div>
