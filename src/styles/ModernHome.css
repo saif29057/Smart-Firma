@@ -1,0 +1,615 @@
+/* ═══════════════════════════════════════════════════════════
+   ModernHome.css — Smart Firma
+   Palette : beige naturel / terre chaude (identique à tout le projet)
+   ══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --beige-50:  #fdf9f4;
+  --beige-100: #f5f0e8;
+  --beige-200: #ede4d3;
+  --beige-300: #e0d4bc;
+  --gold-300:  #f5d49a;
+  --gold-400:  #c8a96e;
+  --gold-500:  #b8913a;
+  --brown-400: #8b6234;
+  --brown-600: #5a3e1b;
+  --brown-900: #2a1d0f;
+  --earth-700: #3d2b1a;
+
+  --shadow-sm: 0 2px 12px rgba(90,62,27,.10);
+  --shadow-md: 0 8px 32px rgba(90,62,27,.14);
+  --shadow-lg: 0 20px 60px rgba(90,62,27,.18);
+  --radius: 24px;
+  --radius-sm: 14px;
+  --radius-pill: 100px;
+}
+
+/* ── Page ─────────────────────────────────────────────────── */
+.home-page-agricole {
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(160deg, var(--beige-100) 0%, var(--beige-200) 60%, var(--beige-300) 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════════ */
+.hero-agricole {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* background gradient */
+.hero-background-agricole {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--brown-600) 0%, var(--earth-700) 40%, var(--brown-400) 100%);
+  z-index: 0;
+}
+
+/* grain texture */
+.hero-background-agricole::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M50 50v-6h-3v6h-6v3h6v6h3v-6h6v-3h-6zM10 10V4H7v6H1v3h6v6h3v-6h6v-3h-6z'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.hero-gradient-agricole {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(200,169,110,.12) 0%, transparent 65%);
+}
+
+/* floating emojis */
+.floating-elements {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-leaf,
+.floating-seed,
+.floating-sun,
+.floating-tractor {
+  position: absolute;
+  font-size: 2.2rem;
+  opacity: .18;
+}
+
+.floating-leaf    { top: 12%; left: 8%;  animation: drift 7s ease-in-out infinite; }
+.floating-seed    { top: 65%; left: 6%;  animation: drift 9s ease-in-out infinite 1s; }
+.floating-sun     { top: 10%; right: 9%; animation: drift 8s ease-in-out infinite .5s; }
+.floating-tractor { top: 70%; right: 8%; animation: drift 10s ease-in-out infinite 2s; }
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-18px) rotate(6deg); }
+}
+
+/* hero content */
+.hero-content-agricole {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3rem;
+}
+
+/* brand */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  margin-bottom: .5rem;
+}
+
+.logo-icon { font-size: 3rem; }
+
+.hero-title-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: var(--beige-100);
+  margin: 0;
+  line-height: 1.05;
+}
+
+.brand-highlight-agricole {
+  color: var(--gold-300);
+  position: relative;
+}
+
+.hero-subtitle-agricole {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: rgba(245,240,232,.8);
+  max-width: 600px;
+  line-height: 1.65;
+  margin: .75rem auto 0;
+}
+
+/* hero stats */
+.hero-stats-agricole {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.stat-item-agricole {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(200,169,110,.3);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.4rem;
+  backdrop-filter: blur(8px);
+  transition: background .2s;
+}
+.stat-item-agricole:hover {
+  background: rgba(255,255,255,.13);
+}
+
+.stat-item-agricole .stat-icon { font-size: 1.6rem; }
+
+.stat-item-agricole .stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--gold-300);
+  line-height: 1;
+}
+
+.stat-item-agricole .stat-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: rgba(245,240,232,.7);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* hero CTA buttons */
+.hero-actions-agricole {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-agricole {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: .95rem 2rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn-primary-agricole {
+  background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
+  color: var(--brown-900);
+  box-shadow: 0 6px 24px rgba(200,169,110,.45);
+}
+.btn-primary-agricole:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(200,169,110,.55);
+}
+
+.btn-secondary-agricole {
+  background: rgba(255,255,255,.1);
+  color: var(--beige-100);
+  border: 2px solid rgba(200,169,110,.5);
+  backdrop-filter: blur(8px);
+}
+.btn-secondary-agricole:hover {
+  background: rgba(255,255,255,.18);
+  border-color: var(--gold-300);
+  transform: translateY(-3px);
+}
+
+.btn-icon { font-size: 1.1rem; }
+
+/* ══════════════════════════════════════════════════════════
+   FEATURES
+   ══════════════════════════════════════════════════════════ */
+.features-section-agricole {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem 4rem;
+}
+
+.section-header-agricole {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--brown-900);
+  margin: 0 0 .75rem;
+}
+
+.section-subtitle-agricole {
+  font-size: 1rem;
+  color: var(--brown-400);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.features-grid-agricole {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.4rem;
+}
+
+.feature-card-agricole {
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--beige-300);
+  padding: 2rem 1.6rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform .22s, box-shadow .22s;
+}
+
+.feature-card-agricole::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-400), var(--gold-300), transparent);
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  transition: opacity .22s;
+}
+
+.feature-card-agricole:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+.feature-card-agricole:hover::before { opacity: 1; }
+
+.feature-icon-wrapper-agricole {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon-agricole {
+  font-size: 2.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-bg-agricole {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,169,110,.18), rgba(245,212,154,.12));
+  border-radius: 14px;
+}
+
+.feature-title-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brown-900);
+  margin: 0;
+}
+
+.feature-description-agricole {
+  font-size: .88rem;
+  color: #6b5742;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.feature-link-agricole {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--brown-600);
+  text-decoration: none;
+  margin-top: .3rem;
+  transition: gap .18s, color .18s;
+}
+.feature-link-agricole:hover {
+  color: var(--brown-400);
+  gap: .7rem;
+}
+
+.link-arrow-agricole {
+  font-size: 1rem;
+  transition: transform .18s;
+}
+.feature-link-agricole:hover .link-arrow-agricole { transform: translateX(3px); }
+
+/* ══════════════════════════════════════════════════════════
+   ABOUT
+   ══════════════════════════════════════════════════════════ */
+.about-section-agricole {
+  background: linear-gradient(135deg, var(--brown-900) 0%, var(--earth-700) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-section-agricole::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.about-container-agricole {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.about-content-agricole {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-title-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--beige-100);
+  margin: 0 0 1rem;
+  line-height: 1.25;
+}
+
+.about-description-agricole {
+  font-size: .95rem;
+  color: rgba(245,240,232,.78);
+  line-height: 1.7;
+  margin: 0 0 2rem;
+}
+
+.about-highlights-agricole {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.highlight-item-agricole {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.highlight-icon-agricole { font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem; }
+
+.highlight-item-agricole strong {
+  display: block;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--gold-300);
+  margin-bottom: .2rem;
+}
+
+.highlight-item-agricole p {
+  font-size: .85rem;
+  color: rgba(245,240,232,.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* visual card */
+.about-visual-agricole {
+  display: flex;
+  justify-content: center;
+}
+
+.visual-card-agricole {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(200,169,110,.3);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 360px;
+}
+
+.agricole-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: 2rem;
+}
+
+.logo-large { font-size: 3.5rem; }
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--gold-300);
+}
+
+.visual-stats-agricole {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.visual-stat-agricole {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+
+.stat-circle-agricole {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(200,169,110,.25), rgba(245,212,154,.15));
+  border: 2px solid rgba(200,169,110,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .22s;
+}
+.stat-circle-agricole:hover { transform: scale(1.06); }
+
+.stat-value-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gold-300);
+}
+
+.stat-name-agricole {
+  font-size: .75rem;
+  font-weight: 600;
+  color: rgba(245,240,232,.65);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CTA
+   ══════════════════════════════════════════════════════════ */
+.cta-section-agricole {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cta-content-agricole {
+  text-align: center;
+  max-width: 680px;
+  padding: 3rem 2rem;
+}
+
+.cta-title-agricole {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  text-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+
+.cta-subtitle-agricole {
+  font-size: 1rem;
+  color: rgba(255,255,255,.88);
+  margin: 0 0 2.2rem;
+  line-height: 1.65;
+  text-shadow: 0 1px 6px rgba(0,0,0,.25);
+}
+
+.cta-actions-agricole {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-cta-agricole {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1rem 2.2rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn-primary-cta-agricole {
+  background: linear-gradient(135deg, var(--gold-300), var(--gold-500));
+  color: var(--brown-900);
+  box-shadow: 0 6px 24px rgba(200,169,110,.5);
+}
+.btn-primary-cta-agricole:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(200,169,110,.6);
+}
+
+.btn-secondary-cta-agricole {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,.5);
+  backdrop-filter: blur(8px);
+}
+.btn-secondary-cta-agricole:hover {
+  background: rgba(255,255,255,.25);
+  transform: translateY(-3px);
+}
+
+.btn-icon-agricole { font-size: 1.1rem; }
+.btn-arrow-agricole { font-size: 1rem; transition: transform .18s; }
+.btn-cta-agricole:hover .btn-arrow-agricole { transform: translateX(4px); }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .about-content-agricole { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about-visual-agricole { order: -1; }
+}
+
+@media (max-width: 640px) {
+  .hero-content-agricole { padding: 4rem 1.3rem 3.5rem; gap: 2rem; }
+  .hero-title-agricole   { font-size: 2.4rem; }
+  .hero-stats-agricole   { gap: 1rem; }
+  .stat-item-agricole    { padding: .7rem 1rem; }
+
+  .features-section-agricole { padding: 3.5rem 1rem 3rem; }
+  .features-grid-agricole    { grid-template-columns: 1fr; }
+
+  .about-container-agricole { padding: 3rem 1.2rem; }
+  .hero-actions-agricole,
+  .cta-actions-agricole { flex-direction: column; align-items: center; }
+  .btn-agricole, .btn-cta-agricole { width: 100%; justify-content: center; }
+}
